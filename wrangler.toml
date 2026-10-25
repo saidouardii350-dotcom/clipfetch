@@ -1,0 +1,20 @@
+# ============================================================
+# ClipFetch — wrangler.toml
+# Cloudflare Pages configuration (static site, no build step).
+#
+# NOTE: this file is OPTIONAL. If you deploy via the Cloudflare
+# dashboard's "Connect to Git" flow (GitHub repo -> Pages), you
+# don't need it at all. Use it when deploying from the command
+# line or CI with `npx wrangler pages deploy`.
+# ============================================================
+
+name = "clipfetch"
+
+# Tells Wrangler the folder that gets published. "./" means the
+# project root, since index.html sits next to this file.
+pages_build_output_dir = "./"
+
+# Uncomment the line below only if you later add Pages Functions
+# (serverless code in a /functions folder). A pure static site
+# does not need it.
+# compatibility_date = "2026-10-25"
