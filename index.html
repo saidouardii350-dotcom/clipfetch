@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClipFetch — Save Videos. Your Way.</title>
+  <meta name="description" content="ClipFetch is a free, privacy-friendly tool for saving videos you own or are allowed to download. Check direct video links, see file name, type and size, and save your own video files. No sign-up. URLs are never stored.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://clipfetch.pages.dev/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ClipFetch">
+  <meta property="og:title" content="ClipFetch — Save Videos. Your Way.">
+  <meta property="og:description" content="Simple, free tools for videos you own or are allowed to download.">
+  <meta property="og:url" content="https://clipfetch.pages.dev/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="ClipFetch — Save Videos. Your Way.">
+  <meta name="twitter:description" content="Simple, free tools for videos you own or are allowed to download.">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d1b2a'/%3E%3Cpath d='M10 12l6 5 6-5' stroke='%234ea5ff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M10 19l6 5 6-5' stroke='%234ea5ff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+<base target="_blank">
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="#top" aria-label="ClipFetch home">
+        <svg class="logo-mark" width="30" height="30" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="7" fill="#13233d"/>
+          <path d="M10 12l6 5 6-5" stroke="#4ea5ff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10 19l6 5 6-5" stroke="#4ea5ff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>ClipFetch</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#how-it-works">How it works</a>
+        <a href="#limitations">Limitations</a>
+        <a href="#about">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ===== Hero + URL checker ===== -->
+    <section class="hero">
+      <div class="container">
+        <h1>Save Videos. Your Way.</h1>
+        <p class="subtitle">Simple, free tools for videos you own or are allowed to download.</p>
+
+        <form id="check-form" class="check-form" novalidate>
+          <label class="sr-only" for="url-input">Video file URL</label>
+          <input
+            type="url"
+            id="url-input"
+            name="url"
+            placeholder="Paste a direct video file URL (https://…)"
+            autocomplete="off"
+            spellcheck="false"
+            inputmode="url"
+            required>
+          <button type="submit" class="btn btn-primary" id="check-btn">Check Video</button>
+        </form>
+        <p class="field-hint">Direct links to video files only — e.g. <code>https://example.com/video.mp4</code></p>
+
+        <div id="status-area" class="status-area" role="status" aria-live="polite"></div>
+
+        <!-- Result card (hidden until a check succeeds) -->
+        <div id="result-card" class="result-card" hidden>
+          <div class="result-head">
+            <h2 id="result-title">Video ready</h2>
+            <span id="result-badge" class="badge">Direct file</span>
+          </div>
+          <dl class="result-meta">
+            <div><dt>Filename</dt><dd id="result-name">—</dd></div>
+            <div><dt>Type</dt><dd id="result-type">—</dd></div>
+            <div><dt>Size</dt><dd id="result-size">—</dd></div>
+          </dl>
+          <div class="result-actions">
+            <button id="download-btn" class="btn btn-primary" type="button">Download</button>
+            <button id="open-tab-btn" class="btn btn-secondary" type="button">Open in new tab</button>
+          </div>
+          <p id="result-note" class="result-note"></p>
+        </div>
+
+        <!-- YouTube notice (hidden unless a YouTube link is entered) -->
+        <div id="youtube-card" class="notice-card" hidden>
+          <h2>YouTube link detected</h2>
+          <p>ClipFetch cannot download videos from YouTube, and we won't pretend otherwise. YouTube's Terms of Service
+            do not permit unauthorized downloading, and we do not bypass DRM, authentication, or platform restrictions.</p>
+          <p>If this video is yours, you can download your own content through
+            <strong>YouTube Studio</strong> (Content → select video → Options → Download), or use YouTube's official
+            offline features in the mobile app with YouTube Premium.</p>
+          <div class="result-actions">
+            <a id="youtube-open-btn" class="btn btn-primary" href="#" target="_blank" rel="noopener noreferrer">Open original video on YouTube</a>
+          </div>
+        </div>
+
+        <div class="divider"><span>or</span></div>
+
+        <!-- ===== Local file upload ===== -->
+        <section class="upload-section" aria-labelledby="upload-heading">
+          <h2 id="upload-heading" class="section-title">Save a local video file</h2>
+          <p class="section-sub">Pick a video file already on your device and save a copy of it — handy on mobile, where "downloading" a file you already have isn't always obvious.</p>
+
+          <label class="file-drop" for="file-input">
+            <input type="file" id="file-input" accept="video/*,.mkv,.mov,.avi,.webm,.m4v,.mp4,.3gp,.ogv" hidden>
+            <span class="file-drop-icon" aria-hidden="true">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
+            </span>
+            <span class="file-drop-text"><strong>Choose a video file</strong> from this device</span>
+          </label>
+
+          <div id="file-card" class="result-card" hidden>
+            <div class="result-head">
+              <h2>File selected</h2>
+              <span class="badge badge-soft">Local file</span>
+            </div>
+            <dl class="result-meta">
+              <div><dt>Filename</dt><dd id="file-name">—</dd></div>
+              <div><dt>Type</dt><dd id="file-type">—</dd></div>
+              <div><dt>Size</dt><dd id="file-size">—</dd></div>
+            </dl>
+            <div class="result-actions">
+              <button id="save-copy-btn" class="btn btn-primary" type="button">Save a copy</button>
+            </div>
+            <p id="file-note" class="result-note"></p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ===== How it works ===== -->
+    <section id="how-it-works" class="info-section">
+      <div class="container">
+        <h2 class="section-title">How it works</h2>
+        <div class="card-grid">
+          <article class="info-card">
+            <h3>1. Paste a direct link</h3>
+            <p>ClipFetch checks the link safely in your browser. It reads the file's name, type, and size — the URL is sent nowhere and stored nowhere.</p>
+          </article>
+          <article class="info-card">
+            <h3>2. Check before you save</h3>
+            <p>You'll see exactly what the file is before anything happens. If the link isn't a video, is too large, or the server blocks access, we tell you honestly.</p>
+          </article>
+          <article class="info-card">
+            <h3>3. Download what's allowed</h3>
+            <p>Only download videos you own, that are licensed for download, or that you're explicitly permitted to save. We never bypass DRM, logins, or paywalls.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Limitations (honest) ===== -->
+    <section id="limitations" class="info-section info-section-alt">
+      <div class="container">
+        <h2 class="section-title">What ClipFetch can't do</h2>
+        <p class="section-sub">We'd rather be upfront than overpromise:</p>
+        <ul class="plain-list">
+          <li><strong>No YouTube downloading.</strong> YouTube's terms forbid it, so we don't do it — and no tool that claims otherwise has our blessing.</li>
+          <li><strong>No DRM or paywall bypass.</strong> If a site requires a login, subscription, or encryption, ClipFetch stops there.</li>
+          <li><strong>Direct file links only.</strong> Links to streaming players (players, embeds, "watch" pages) are not video files and will be flagged.</li>
+          <li><strong>Server restrictions apply.</strong> Some servers block cross-origin checks (CORS). When that happens we can't read the file details, and we say so instead of guessing.</li>
+          <li><strong>Your browser does the work.</strong> Nothing is uploaded to us — which also means very large files depend on your device's memory.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== About / Contact / Privacy / Terms ===== -->
+    <section id="about" class="info-section">
+      <div class="container">
+        <h2 class="section-title">About</h2>
+        <p class="section-sub">ClipFetch is a small, free, open static tool. There's no account, no tracking, and no server-side processing: every check runs in your browser and nothing you paste is stored or logged. It exists for one job — helping you keep copies of videos that are yours to keep.</p>
+
+        <div class="legal-grid">
+          <article class="info-card" id="contact">
+            <h3>Contact</h3>
+            <p>Questions, bug reports, or a request to remove a link from an example: email <a href="mailto:hello@clipfetch.pages.dev">hello@clipfetch.pages.dev</a>. We read everything; replies may take a few days.</p>
+          </article>
+          <article class="info-card" id="privacy">
+            <h3>Privacy Policy</h3>
+            <p>ClipFetch collects <strong>no personal information</strong>. URLs you check are processed entirely in your browser, are never transmitted to or stored on any server, and disappear when you close the tab. We use no analytics and set no tracking cookies in this version. Files you select never leave your device unless you save them yourself.</p>
+          </article>
+          <article class="info-card" id="terms">
+            <h3>Terms of Use</h3>
+            <p>Use ClipFetch only for content you own or are legally permitted to download. You are responsible for complying with the terms of the source website and applicable law, including copyright. ClipFetch is provided "as is", without warranties. Do not attempt to use it to bypass DRM, authentication, paywalls, or platform restrictions.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-brand">ClipFetch — Save Videos. Your Way.</p>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="#privacy">Privacy Policy</a>
+        <a href="#terms">Terms of Use</a>
+      </nav>
+      <p class="footer-fine">© <span id="year"></span> ClipFetch. Download only what you're allowed to keep.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
